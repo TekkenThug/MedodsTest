@@ -8,7 +8,14 @@ import (
 	"medods/project/pkg/db"
 	"medods/project/pkg/jwt"
 	"net/http"
+
+	httpSwagger "github.com/swaggo/http-swagger"
+	_ "medods/project/docs"
 )
+
+// @title Medods API
+// @version 1.0
+// @description Auth testing API
 
 func App() http.Handler {
 	conf := configs.LoadConfig()
@@ -21,13 +28,15 @@ func App() http.Handler {
 
 	// Services
 	authService := auth.NewService(&auth.ServiceDeps{
-		UserRepository: userRepository,
+		UserRepository:  userRepository,
 		TokenRepository: tokenRepository,
-		Jwt: jwt.NewJWT(conf.Auth.Secret),
+		Jwt:             jwt.NewJWT(conf.Auth.Secret),
 	})
 
 	// Handlers
 	auth.NewHandler(router, &auth.Deps{Service: authService, Secret: conf.Auth.Secret})
+
+	router.HandleFunc("/swagger/", httpSwagger.WrapHandler)
 
 	return router
 }

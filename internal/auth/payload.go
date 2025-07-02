@@ -11,3 +11,7 @@ type RefreshRequest struct {
 type LogoutRequest struct {
 	AccessToken string `json:"access_token"`
 }
+
+type MeResponse struct {
+	GUID string `json:"GUID"`
+}

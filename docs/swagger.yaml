@@ -1,0 +1,126 @@
+definitions:
+  auth.LogoutRequest:
+    properties:
+      access_token:
+        type: string
+    type: object
+  auth.MeResponse:
+    properties:
+      GUID:
+        type: string
+    type: object
+  auth.RefreshRequest:
+    properties:
+      access_token:
+        type: string
+    type: object
+  auth.TokenResponse:
+    properties:
+      token:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: Auth testing API
+  title: Medods API
+  version: "1.0"
+paths:
+  /auth/login:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает JWT-токен
+      parameters:
+      - description: User GUID
+        in: query
+        name: GUID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.TokenResponse'
+        "400":
+          description: Bad request
+          schema:
+            type: string
+      summary: Аутентификация пользователя
+      tags:
+      - Auth
+  /auth/logout:
+    post:
+      consumes:
+      - application/json
+      description: Деактивирует JWT-токен
+      parameters:
+      - description: Данные для выхода
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.LogoutRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Выход из системы
+      tags:
+      - Auth
+  /auth/me:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает информацию о пользователе
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.MeResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Получить данные текущего пользователя
+      tags:
+      - Auth
+  /auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Возвращает новый JWT-токен
+      parameters:
+      - description: Данные для обновления токена
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.RefreshRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.TokenResponse'
+        "400":
+          description: Bad request
+          schema:
+            type: string
+      summary: Обновление токена
+      tags:
+      - Auth
+swagger: "2.0"

@@ -66,6 +66,16 @@ func parseRefreshTokenFromCookie(req *http.Request) (string, error) {
 	return string(refreshToken), nil
 }
 
+// Login godoc
+// @Summary Аутентификация пользователя
+// @Description Возвращает JWT-токен
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param GUID query string true "User GUID"
+// @Success 200 {object} TokenResponse
+// @Failure 400 {string} string "Bad request"
+// @Router /auth/login [get]
 func (handler *Handler) Login() http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
 		guid := req.URL.Query().Get("GUID")
@@ -89,6 +99,16 @@ func (handler *Handler) Login() http.HandlerFunc {
 	}
 }
 
+// Refresh godoc
+// @Summary Обновление токена
+// @Description Возвращает новый JWT-токен
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param request body RefreshRequest true "Данные для обновления токена"
+// @Success 200 {object} TokenResponse
+// @Failure 400 {string} string "Bad request"
+// @Router /auth/refresh [post]
 func (handler *Handler) Refresh() http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
 		refreshToken, err := parseRefreshTokenFromCookie(req)
@@ -122,14 +142,34 @@ func (handler *Handler) Refresh() http.HandlerFunc {
 	}
 }
 
+// Me godoc
+// @Summary Получить данные текущего пользователя
+// @Description Возвращает информацию о пользователе
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Success 200 {object} MeResponse
+// @Failure 401 {string} string "Unauthorized"
+// @Security BearerAuth
+// @Router /auth/me [get]
 func (handler *Handler) Me() http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		response.Send(struct{ GUID string }{
+		response.Send(&MeResponse{
 			GUID: req.Context().Value(middleware.ContextGUIDKey).(string),
 		}, w, 200)
 	}
 }
 
+// Logout godoc
+// @Summary Выход из системы
+// @Description Деактивирует JWT-токен
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param request body LogoutRequest true "Данные для выхода"
+// @Success 200 {string} string
+// @Failure 400 {string} string
+// @Router /auth/logout [post]
 func (handler *Handler) Logout() http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
 		refreshToken, err := parseRefreshTokenFromCookie(req)
