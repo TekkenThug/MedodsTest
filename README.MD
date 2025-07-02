@@ -2,7 +2,11 @@
 
 ## Run
 
-Use ``docker-compose -f docker-compose.yml up -d``
+Copy `.env.example` and rename to `.env`
+
+Use `docker-compose -f docker-compose.yml up -d`
+
+To create test data use code from `seed.sql` in `postgres` container
 
 ## Swagger
 

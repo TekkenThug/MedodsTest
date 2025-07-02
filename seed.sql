@@ -1,0 +1,1 @@
+INSERT INTO users (guid) values ('9fb9298b-fe2c-478b-be06-422e876d2330');

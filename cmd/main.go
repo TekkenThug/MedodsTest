@@ -22,6 +22,9 @@ func App() http.Handler {
 	db := db.NewDb(conf)
 	router := http.NewServeMux()
 
+	// Automigration
+	db.AutoMigrate(&user.User{}, &token.Token{})
+
 	// Repositories
 	userRepository := user.NewRepository(db)
 	tokenRepository := token.NewRepository(db)
